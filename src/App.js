@@ -1,13 +1,14 @@
 import { StatusBar,Dimensions } from 'react-native';
-import React, {useState} from 'react';
+import React,{useEffect, useState} from 'react';
 import styled, {ThemeProvider} from 'styled-components/native';
-import {theme} from './theme';
-import Input from './component/input';
-import IconButton from './component/iconButton';
-import {icons} from './icons';
-import Task from './task';
-import { PickerItem } from 'react-native/Libraries/Components/Picker/Picker';
+import {theme} from './theme.js';
+import Input from './component/input.js';
+import IconButton from './component/iconButton.js';
+import {icons} from './icons.js';
+import Task from './task.js';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
+const storageKey ="@test";
 const List = styled.ScrollView`
     flex: 1;
     width : ${({width})=> width-40}px;
@@ -25,7 +26,7 @@ export default function App() {
 
     const [newTask, setNewTask] = useState('');
 
-    const addTask = () =>{
+    const addTask = async() =>{
         if(newTask.length < 1){
             return;
         }
@@ -35,19 +36,39 @@ export default function App() {
         }
         setNewTask('');
         setTasks({ ...tasks, ...newTaskObject});
+        const currentTasks = Object.assign( tasks,newTaskObject);
+        await saveData(currentTasks);
     };
 
-    const deleteTask = ( id ) =>{
+    const deleteTask =async ( id ) =>{
         const currentTasks = Object.assign( {}, tasks);
         delete currentTasks[id];
         setTasks(currentTasks);
+        await saveData(currentTasks);
     };
 
-    const toggleTask = id =>{
+    const toggleTask = async(id) =>{
         const currentTasks = Object.assign({}, tasks);
         currentTasks[id]['completed'] = !currentTasks[id]['completed'];
         setTasks(currentTasks);
+        await saveData(currentTasks);
     };
+
+    const saveData = async(toSave)=>{
+        await AsyncStorage.setItem(storageKey,  JSON.stringify(toSave));
+      };
+    
+    const loadData = async()=>{
+        const s = await AsyncStorage.getItem(storageKey);
+        if (s==null){
+            setTasks(tempData);
+        }
+        else setTasks(JSON.parse(S));
+    };
+      
+      useEffect(()=> {
+        loadData();
+      }, []);
     
     return (
     <ThemeProvider theme = {theme}>

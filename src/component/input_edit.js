@@ -31,7 +31,7 @@ const Input = ({placeholder, value, onChangeText, onSubmitEditing})=> {
         />
 }
 
-Input.PropTypes = {
+Input.propTypes = {
     placeholder : PropTypes.string, // 문자열만 가능
     value : PropTypes.string.isRequired, // 문자열만, 필수
     onChangeText: PropTypes.func.isRequired, // 함수만, 필수

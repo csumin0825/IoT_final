@@ -29,7 +29,7 @@ IconButton.defaultProps = {
     item: {completed: false},
 }
 
-IconButton.PropTypes = {
+IconButton.propTypes = {
     icon: PropTypes.oneOf(Object.values(icons)).isRequired,
     onPress: PropTypes.func,
     item : PropTypes.object,
